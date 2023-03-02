@@ -1,8 +1,14 @@
 package com.todo;
 
+import com.todo.service.TodoService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.Optional;
+
+@Slf4j
 @RequestMapping("/todo")
 @RestController
 @RequiredArgsConstructor
@@ -18,20 +24,41 @@ public class Controller {
      * 예외 페이지 만들기
      */
 
+    private final TodoService todoService;
 
-    @GetMapping("/")
-    public void getPlanList(){};
+
+    @GetMapping("")
+    public List<Todo> getPlanList(){
+
+        return todoService.getTodoList();
+    };
 
     @GetMapping("/{todo_no}")
-    public void getPlan(){};
+    public Optional<Todo> getPlan(@PathVariable(name = "todo_no") Long todoNum){
 
-    @PostMapping("/")
-    public void createTodo(@RequestBody Todo todo){};
+        return todoService.getTodo(todoNum);
+    };
+
+    @PostMapping("")
+    public boolean createTodo(@RequestBody Todo newTodo){
+
+        return todoService.createTodo(newTodo);
+    };
 
     @PatchMapping("/{todo_no}")
-    public void updateTodo(@RequestBody String todoContent, boolean todoSuccess){};
+    public boolean editTodo(@PathVariable(name = "todo_no") Long todoNum,
+                            @RequestBody String todoContent,
+                            @RequestBody char todoSuccess){
+
+        log.info("/{todo_num} (Patcn), todo_no : {}, todoContent : {}, todoSuccess : {}",todoNum, todoContent, todoSuccess);
+
+        return todoService.editTodo(todoNum, todoContent, todoSuccess);
+    };
 
     @DeleteMapping("/{todo_no}")
-    public void deleteTodo(){};
+    public boolean deleteTodo(@PathVariable(name = "todo_no") Long todoNum){
+
+        return todoService.deleteTodo(todoNum);
+    };
 
 }

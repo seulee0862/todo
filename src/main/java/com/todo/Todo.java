@@ -1,11 +1,10 @@
 package com.todo;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 
-@Getter @Setter
+@Getter @Setter @NoArgsConstructor(access = AccessLevel.PUBLIC)
 @Entity
 public class Todo {
 
@@ -19,6 +18,26 @@ public class Todo {
     @Column
     private String todoContent;
 
-    @Column
-    private boolean todoSuccess;
+    @Column(columnDefinition = "char(1) default 'N'", nullable = false)
+    private char todoSuccess;
+
+    public void setTodoName(String todoName) {
+        this.todoName = todoName;
+    }
+
+    public void setTodoContent(String todoContent) {
+        this.todoContent = todoContent;
+    }
+
+    public void setTodoSuccess(char todoSuccess) {
+        this.todoSuccess = todoSuccess;
+    }
+
+    @Builder
+    public Todo(Long id, String todoName, String todoContent, char todoSuccess) {
+        this.id = id;
+        this.todoName = todoName;
+        this.todoContent = todoContent;
+        this.todoSuccess = todoSuccess;
+    }
 }
