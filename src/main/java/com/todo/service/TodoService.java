@@ -1,44 +1,44 @@
 package com.todo.service;
 
-import com.todo.Todo;
-import com.todo.funtion.TodoFunction;
+import com.todo.model.TodoResult;
+import com.todo.model.Todo;
+import com.todo.funtion.TodoCRUD;
+import com.todo.funtion.TodoResultCreator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class TodoService {
 
-    private final TodoFunction todoFunction;
+    private final TodoCRUD todoCRUD;
+    private final TodoResultCreator todoResultCreator;
 
-    public List<Todo> getTodoList() {
+    public TodoResult getTodoList() {
 
-        return todoFunction.findAllTodo();
+        return todoResultCreator.getTodoList(todoCRUD.findAllTodo());
     }
 
-    public Optional<Todo> getTodo(Long todoNum) {
+    public TodoResult getTodo(Long todoNum) {
 
-        return todoFunction.getTodoById(todoNum);
+        return todoResultCreator.getTodo(todoCRUD.getTodoById(todoNum));
     }
 
-    public boolean createTodo(Todo newTodo) {
+    public TodoResult createTodo(Todo todo) {
 
-        return todoFunction.saveTodo(newTodo);
+        return todoResultCreator.createTodo(todoCRUD.saveTodo(todo));
     }
 
-    public boolean editTodo(Long todoNum, String todoContent, char todoSuccess) {
+    public TodoResult editTodo(Long todoNum,Todo todo) {
 
-        return todoFunction.editTodo(todoNum, todoContent, todoSuccess);
+        return todoResultCreator.editTodo(todoCRUD.editTodo(todoNum, todo));
     }
 
-    public boolean deleteTodo(Long todoNum) {
+    public TodoResult deleteTodo(Long todoNum) {
 
-        return todoFunction.deleteTodoById(todoNum);
+        return todoResultCreator.deleteTodo(todoCRUD.deleteTodoById(todoNum));
     }
 
 

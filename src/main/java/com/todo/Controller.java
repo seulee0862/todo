@@ -1,12 +1,13 @@
 package com.todo;
 
+import com.todo.model.Todo;
+import com.todo.model.TodoResult;
+import com.todo.funtion.TodoValidator;
 import com.todo.service.TodoService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @RequestMapping("/todo")
@@ -14,51 +15,85 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class Controller {
 
-    /**
-     * 할일 조회하기
-     * 할일 만들기
-     * 할일 수정하기
-     *  할일 내용 수정 하기
-     *  할일 달성 여부 체크하기
-     * 할일 삭제하기
-     * 예외 페이지 만들기
-     */
-
     private final TodoService todoService;
-
+    private final TodoValidator todoValidator;
 
     @GetMapping("")
-    public List<Todo> getPlanList(){
+    public ResponseEntity<TodoResult> getTodoList(){
 
-        return todoService.getTodoList();
+        TodoResult result = todoService.getTodoList();
+        if (result.isSuccess()) {
+            return ResponseEntity
+                    .ok(result);
+        }
+        else {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new TodoResult(false, result.getMessage(), null));
+        }
     };
 
     @GetMapping("/{todo_no}")
-    public Optional<Todo> getPlan(@PathVariable(name = "todo_no") Long todoNum){
+    public ResponseEntity<TodoResult> getTodo(@PathVariable(name = "todo_no") Long todoNum){
 
-        return todoService.getTodo(todoNum);
+        TodoResult result = todoService.getTodo(todoNum);
+
+        if (result.isSuccess()) {
+            return ResponseEntity
+                    .ok(result);
+        }
+        else {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new TodoResult(false, result.getMessage(), null));
+        }
     };
 
     @PostMapping("")
-    public boolean createTodo(@RequestBody Todo newTodo){
+    public ResponseEntity<TodoResult> createTodo(@RequestBody Todo todo){
 
-        return todoService.createTodo(newTodo);
+        TodoValidator.TodoValidReturnValue valid = todoValidator.valid(todo, "createTodo");
+        TodoResult result;
+        if (valid.isSuccess()) {
+            return ResponseEntity
+                    .ok(todoService.createTodo(todo));
+        }
+        else {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new TodoResult(false, valid.getMsg(), null));
+        }
     };
 
     @PatchMapping("/{todo_no}")
-    public boolean editTodo(@PathVariable(name = "todo_no") Long todoNum,
-                            @RequestBody String todoContent,
-                            @RequestBody char todoSuccess){
+    public ResponseEntity<TodoResult> editTodo(@PathVariable(name = "todo_no") Long todoNum,
+                            @RequestBody Todo todo){
 
-        log.info("/{todo_num} (Patcn), todo_no : {}, todoContent : {}, todoSuccess : {}",todoNum, todoContent, todoSuccess);
-
-        return todoService.editTodo(todoNum, todoContent, todoSuccess);
+        TodoResult result = todoService.editTodo(todoNum, todo);
+        if (result.isSuccess()) {
+            return ResponseEntity
+                    .ok(result);
+        }
+        else {
+            return ResponseEntity
+                    .badRequest()
+                    .body(result);
+        }
     };
 
     @DeleteMapping("/{todo_no}")
-    public boolean deleteTodo(@PathVariable(name = "todo_no") Long todoNum){
+    public ResponseEntity<TodoResult> deleteTodo(@PathVariable(name = "todo_no") Long todoNum){
 
-        return todoService.deleteTodo(todoNum);
+        TodoResult result = todoService.deleteTodo(todoNum);
+        if (result.isSuccess()) {
+            return ResponseEntity
+                    .ok(result);
+        }
+        else {
+            return ResponseEntity
+                    .badRequest()
+                    .body(result);
+        }
     };
 
 }

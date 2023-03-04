@@ -1,4 +1,4 @@
-package com.todo.config;
+package com.todo.filter;
 
 
 import org.springframework.core.Ordered;
@@ -25,10 +25,8 @@ public class CorsFilter implements Filter {
         HttpServletRequest request = (HttpServletRequest) req;
         HttpServletResponse response = (HttpServletResponse) res;
 
-        //여기에 내가 허용하고자 하는 클라이언트의 url을 입력해 줍니다.
-        //주의사항 "https://myurl.com/" 처럼 마지막에 '/'를 붙이면 CORS에러가 그대로 발생하게 됩니다.
-        //response.setHeader("Access-Control-Allow-Origin", "url입력 "); // 특정 url 요청허용
-        response.setHeader("Access-Control-Allow-Origin", "*");  // 모든 url요청허용
+        //주의사항 "https://~.com/" 처럼 마지막에 '/'를 붙이면 CORS에러 그대로 발생
+        response.setHeader("Access-Control-Allow-Origin", "*");
         response.setHeader("Access-Control-Allow-Credentials", "true");
         response.setHeader("Access-Control-Allow-Methods","*");
         response.setHeader("Access-Control-Max-Age", "3600");

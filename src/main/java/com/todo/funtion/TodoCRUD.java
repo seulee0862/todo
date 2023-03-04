@@ -1,6 +1,6 @@
 package com.todo.funtion;
 
-import com.todo.Todo;
+import com.todo.model.Todo;
 import com.todo.respository.TodoRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,7 +12,7 @@ import java.util.Optional;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class TodoFunction {
+public class TodoCRUD {
 
     private final TodoRepository todoRepository;
 
@@ -23,13 +23,7 @@ public class TodoFunction {
 
     public Optional<Todo> getTodoById(Long todoNum) {
 
-        log.info("start getById");
-
         Optional<Todo> todo = todoRepository.findById(todoNum);
-        if (todo.isEmpty()) throw new IllegalArgumentException();
-
-        log.info("todoNum : {}, todoIsExists : {}", todoNum, todo.isPresent());
-        log.info("end getById");
 
         return todo;
     }
@@ -41,13 +35,13 @@ public class TodoFunction {
         else return false;
     }
 
-    public boolean editTodo(Long todoNum, String newTodoContent, char todoSuccess) {
+    public boolean editTodo(Long todoNum,Todo todo) {
 
 
         Todo currentTodo = getTodoById(todoNum).get();
 
-        currentTodo.setTodoContent(newTodoContent);
-        currentTodo.setTodoSuccess(todoSuccess);
+        currentTodo.setTodoContent(todo.getTodoContent());
+        currentTodo.setTodoSuccess(todo.getTodoSuccess());
 
         return saveTodo(currentTodo);
     }

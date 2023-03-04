@@ -1,15 +1,14 @@
-package com.todo;
+package com.todo.model;
 
 import lombok.*;
 
 import javax.persistence.*;
 
-@Getter @Setter @NoArgsConstructor(access = AccessLevel.PUBLIC)
+@Getter @NoArgsConstructor(access = AccessLevel.PUBLIC)
 @Entity
 public class Todo {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @Column
